@@ -1,0 +1,17 @@
+{
+  "users": [
+    {
+      "id": "admin",
+      "username": "admin",
+      "email": "admin@stylebase.local",
+      "passwordHash": "807bb821c4df07ab7e2458bb0b84e93be9c175ec0639834b94c5b185c0109f12",
+      "role": "admin",
+      "createdAt": 1774306850137
+    }
+  ],
+  "styles": [],
+  "sessions": {
+    "601d2398626e19d4c5908de0376ee2500a388cb81f8229b4797936c5caac4095": "admin"
+  },
+  "totalDownloads": 0
+}

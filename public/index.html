@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StyleBase — База стилей UI</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;800&family=Geologica:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<header>
+  <div class="logo" onclick="App.navigate('catalog')">
+    <div class="logo-dot"></div>StyleBase
+  </div>
+  <nav>
+    <button class="active" onclick="App.navigate('catalog')">Каталог</button>
+    <button onclick="App.navigate('guide')">Гайд</button>
+    <button id="nav-admin" style="display:none" onclick="App.navigate('admin')">Админ</button>
+  </nav>
+  <div class="header-right" id="header-right"></div>
+</header>
+
+<!-- CATALOG -->
+<div class="page active" id="page-catalog">
+  <div class="hero">
+    <div>
+      <div class="hero-title">База стилей<br><span>интерфейса</span></div>
+      <div class="hero-sub">Централизованный репозиторий UI-стилей. Скачивайте готовые CSS-наборы и делитесь своими решениями.</div>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-num">5</div><div class="stat-label">Базовых стилей</div></div>
+        <div class="stat"><div class="stat-num" id="cnt-user">0</div><div class="stat-label">Пользовательских</div></div>
+        <div class="stat"><div class="stat-num" id="cnt-dl">0</div><div class="stat-label">Скачиваний</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card hc-glass"><div class="hc-label">GLASSMORPHISM</div><div class="hc-title">Blur + Transparency</div></div>
+      <div class="hero-card hc-neu"><div class="hc-label">NEUMORPHISM</div><div class="hc-title">Soft Shadows</div></div>
+      <div class="hero-card hc-material"><div class="hc-label">MATERIAL</div><div class="hc-title">Physics + Depth</div></div>
+      <div class="hero-card hc-flat"><div class="hc-label">FLAT</div><div class="hc-title">Minimal & Bold</div></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="search-input" placeholder="Поиск по названию или автору..." oninput="Catalog.renderAll()">
+    </div>
+    <div class="filter-dropdown-wrap">
+      <button class="filter-dropdown-btn" id="filter-dropdown-btn">
+        <span id="filter-dropdown-label">Все категории</span>
+        <span class="dd-arrow">▾</span>
+      </button>
+      <div class="filter-dropdown-menu" id="filter-dropdown-menu"></div>
+    </div>
+    <div class="source-tabs">
+      <button class="src-tab active" onclick="Catalog.setSource('all',this)">Все</button>
+      <button class="src-tab" onclick="Catalog.setSource('builtin',this)">Базовые</button>
+      <button class="src-tab" onclick="Catalog.setSource('user',this)">Сообщество</button>
+    </div>
+  </div>
+
+  <div class="section-label">
+    Найдено стилей: <span id="catalog-badge">0</span>
+  </div>
+
+  <div class="catalog" id="catalog-grid"></div>
+</div>
+
+<!-- GUIDE -->
+<div class="page" id="page-guide">
+  <div class="guide-wrap">
+    <div class="guide-title">Как использовать <span style="color:var(--accent)">StyleBase</span></div>
+    <div class="guide-sub">Полное руководство по работе с базой стилей.</div>
+    <div class="guide-step"><div class="step-num">01</div><div><div class="step-title">Выберите стиль</div><div class="step-text">Используйте поиск или выпадающий фильтр по категориям. Переключатель «Все / Базовые / Сообщество» позволяет быстро ограничить источник. Нажмите карточку или «Просмотр» для деталей.</div></div></div>
+    <div class="guide-step"><div class="step-num">02</div><div><div class="step-title">Скачайте CSS</div><div class="step-text">Нажмите «Скачать CSS» — регистрация не нужна.</div><div class="step-code">/* glassmorphism.css */<br>.glass-card { backdrop-filter: blur(20px); }</div></div></div>
+    <div class="guide-step"><div class="step-num">03</div><div><div class="step-title">Подключите к проекту</div><div class="step-text">Поместите файл в папку проекта и подключите в HTML.</div><div class="step-code">&lt;link rel="stylesheet" href="styles/glassmorphism.css"&gt;</div></div></div>
+    <div class="guide-step"><div class="step-num">04</div><div><div class="step-title">Загрузите свой стиль</div><div class="step-text">Зарегистрируйтесь и нажмите «+ Загрузить». CSS-анализатор автоматически определит тип стиля и построит превью.</div></div></div>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div class="page" id="page-profile">
+  <div class="profile-wrap" id="profile-content"></div>
+</div>
+
+<!-- ADMIN -->
+<div class="page" id="page-admin">
+  <div class="admin-wrap">
+    <div class="admin-title">Панель <span style="color:var(--accent)">администратора</span></div>
+    <div class="admin-sub">Управление пользователями и стилями.</div>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="Admin.switchTab('users',this)">Пользователи</button>
+      <button class="admin-tab" onclick="Admin.switchTab('styles',this)">Стили</button>
+    </div>
+    <div id="admin-users-panel">
+      <div class="admin-table tbl-users">
+        <div class="admin-table-head"><span>Логин</span><span>Email</span><span>Стилей</span><span>Скач.</span><span style="text-align:right">Действия</span></div>
+        <div id="admin-users-body"></div>
+      </div>
+    </div>
+    <div id="admin-styles-panel" style="display:none">
+      <div class="admin-table tbl-styles">
+        <div class="admin-table-head"><span>Название</span><span>Автор</span><span>Категория</span><span>Скач.</span><span style="text-align:right">Действия</span></div>
+        <div id="admin-styles-body"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">StyleBase</div>
+  <div>База стилей UI © 2026</div>
+  <div style="color:var(--accent)">HTML · CSS · JS</div>
+</footer>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal wide">
+    <div class="modal-header"><div class="modal-title" id="auth-modal-title">Вход</div><button class="modal-close" onclick="UI.closeModal('auth-modal')">×</button></div>
+    <div class="modal-body">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="AuthModal.switchTab('login')">Вход</button>
+        <button class="auth-tab" id="tab-register" onclick="AuthModal.switchTab('register')">Регистрация</button>
+      </div>
+      <div id="auth-login">
+        <div class="form-group"><label class="form-label">Логин</label><input class="form-input" id="login-username" placeholder="username"></div>
+        <div class="form-group"><label class="form-label">Пароль</label><input class="form-input" type="password" id="login-password" placeholder="••••••••"></div>
+        <div class="form-err" id="login-err"></div>
+        <div class="modal-actions" style="margin-top:20px"><button class="modal-btn-dl" onclick="AuthModal.doLogin()">Войти</button><button class="modal-btn-close" onclick="UI.closeModal('auth-modal')">Отмена</button></div>
+      </div>
+      <div id="auth-register" style="display:none">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Логин *</label><input class="form-input" id="reg-username" placeholder="username"></div>
+          <div class="form-group"><label class="form-label">Email *</label><input class="form-input" id="reg-email" placeholder="you@mail.com"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Пароль *</label><input class="form-input" type="password" id="reg-password" placeholder="мин. 6 символов"></div>
+          <div class="form-group"><label class="form-label">Повтор *</label><input class="form-input" type="password" id="reg-password2" placeholder="повторите"></div>
+        </div>
+        <div class="form-err" id="reg-err"></div>
+        <div class="modal-actions" style="margin-top:20px"><button class="modal-btn-dl" onclick="AuthModal.doRegister()">Зарегистрироваться</button><button class="modal-btn-close" onclick="UI.closeModal('auth-modal')">Отмена</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="preview-modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="modal-title">Стиль</div><button class="modal-close" onclick="UI.closeModal('preview-modal')">×</button></div>
+    <div class="modal-body">
+      <div class="preview-fullscreen" id="modal-preview"></div>
+      <div class="detail-grid" id="modal-details"></div>
+      <div style="font-size:12px;color:var(--text-dim);margin-bottom:8px">Пример CSS</div>
+      <div class="css-preview" id="modal-css"></div>
+      <div class="modal-actions"><button class="modal-btn-dl" id="modal-dl-btn">⬇ Скачать CSS</button><button class="modal-btn-close" onclick="UI.closeModal('preview-modal')">Закрыть</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="upload-modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="upload-modal-title">Загрузить стиль</div><button class="modal-close" onclick="UI.closeModal('upload-modal')">×</button></div>
+    <div class="modal-body">
+      <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+        <div class="upload-icon">🎨</div>
+        <div class="upload-title">Нажмите или перетащите CSS-файл</div>
+        <div class="upload-sub">Только .css файлы</div>
+      </div>
+      <input type="file" id="file-input" accept=".css" style="display:none" onchange="Upload.handleFile(this)">
+      <div class="upload-file-info" id="file-info"><span>📄</span><span id="file-name-show"></span></div>
+      <div class="form-group"><label class="form-label">Название *</label><input class="form-input" id="style-name" placeholder="Например: Cyberpunk UI"></div>
+      <div class="form-group"><label class="form-label">Категория</label>
+        <select class="form-select" id="style-cat">
+          <option value="minimal">Минимализм</option>
+          <option value="3d">Объёмные</option>
+          <option value="modern">Современные</option>
+          <option value="dark">Тёмные</option>
+          <option value="other">Другое</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Описание</label><textarea class="form-textarea" id="style-desc" placeholder="Кратко опишите особенности..."></textarea></div>
+      <div class="modal-actions"><button class="modal-btn-dl" id="upload-submit-btn" onclick="Upload.submit()">✓ Опубликовать</button><button class="modal-btn-close" onclick="UI.closeModal('upload-modal')">Отмена</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="edit-profile-modal">
+  <div class="modal wide">
+    <div class="modal-header"><div class="modal-title">Редактировать профиль</div><button class="modal-close" onclick="UI.closeModal('edit-profile-modal')">×</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Логин</label><input class="form-input" id="edit-username"></div>
+      <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="edit-email"></div>
+      <div class="form-divider"></div>
+      <div style="font-size:12px;color:var(--text-dim);margin-bottom:12px">Смена пароля (оставьте пустым, чтобы не менять)</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Новый пароль</label><input class="form-input" type="password" id="edit-password" placeholder="мин. 6 символов"></div>
+        <div class="form-group"><label class="form-label">Повтор</label><input class="form-input" type="password" id="edit-password2"></div>
+      </div>
+      <div class="form-err" id="edit-err"></div>
+      <div class="modal-actions" style="margin-top:20px"><button class="modal-btn-dl" onclick="Profile.saveEdit()">Сохранить</button><button class="modal-btn-close" onclick="UI.closeModal('edit-profile-modal')">Отмена</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal wide">
+    <div class="modal-header"><div class="modal-title" id="confirm-title">Подтверждение</div><button class="modal-close" onclick="UI.closeModal('confirm-modal')">×</button></div>
+    <div class="modal-body">
+      <p style="color:var(--text-dim);margin-bottom:24px" id="confirm-text"></p>
+      <div class="modal-actions"><button class="modal-btn-danger" id="confirm-ok">Удалить</button><button class="modal-btn-close" onclick="UI.closeModal('confirm-modal')">Отмена</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span class="toast-icon" id="toast-icon">✓</span><span id="toast-msg"></span></div>
+
+<script src="js/data.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/analyze.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/upload.js"></script>
+<script src="js/profile.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/auth-modal.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
